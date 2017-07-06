@@ -4,48 +4,48 @@ using System.Linq;
 
 namespace Graph
 {
-    public class Graph<T> where T:struct
-    {
+	public class Graph<T> where T : struct
+	{
 
 		private Dictionary<T, List<T>> graph;
-        public Dictionary<T, List<T>> InitGraph()
-        {
-            graph = new Dictionary<T, List<T>>();
-            
-            var n = int.Parse(Console.ReadLine());
+		public Dictionary<T, List<T>> InitGraph()
+		{
+			graph = new Dictionary<T, List<T>>();
 
-            for (int i = 0; i < n; i++)
-            {
-                var tmp = Console.ReadLine().Split(' ').Select(Parse).ToArray();
-                if(!graph.ContainsKey(tmp[0]))
-                    graph.Add(tmp[0], new List<T>());
+			var n = int.Parse(Console.ReadLine());
 
-                graph[tmp[0]].Add(tmp[1]);
-            }
+			for (int i = 0; i < n; i++)
+			{
+				var tmp = Console.ReadLine().Split(' ').Select(Parse).ToArray();
+				if (!graph.ContainsKey(tmp[0]))
+					graph.Add(tmp[0], new List<T>());
 
-            return graph;
-        }
+				graph[tmp[0]].Add(tmp[1]);
+			}
 
-        private static T Parse(string text) 
-        {
-            return (T)Convert.ChangeType(text, typeof(T));
-        }
+			return graph;
+		}
 
-        public IEnumerable<T> ToplogicalSort() 
-        {
-            var visited = new Dictionary<T,bool>();
-            var sorted = new List<T>();
+		private static T Parse(string text)
+		{
+			return (T)Convert.ChangeType(text, typeof(T));
+		}
 
-            foreach (var item in graph.Keys)
-            {
-                TS(visited, sorted, item);
-            }
+		public IEnumerable<T> ToplogicalSort()
+		{
+			var visited = new Dictionary<T, bool>();
+			var sorted = new List<T>();
 
-            sorted.Reverse();
+			foreach (var item in graph.Keys)
+			{
+				TS(visited, sorted, item);
+			}
+
+			sorted.Reverse();
 			return sorted;
-        }
+		}
 
-        private void TS(Dictionary<T, bool> visited, List<T> sorted, T node)
+		private void TS(Dictionary<T, bool> visited, List<T> sorted, T node)
 		{
 			if (!visited.ContainsKey(node))
 			{
@@ -60,5 +60,5 @@ namespace Graph
 				sorted.Add(node);
 			}
 		}
-    }
+	}
 }
