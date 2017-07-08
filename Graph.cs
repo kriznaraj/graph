@@ -4,23 +4,43 @@ using System.Linq;
 
 namespace Graph
 {
+	public class Node<T> : IComparable<Node<T>> where T : struct
+	{
+		public T data;
+		public int distance;
+
+		public int CompareTo(Node<T> other)
+		{
+			return this.distance.CompareTo(other.distance);
+		}
+	}
+
 	public class Graph<T> where T : struct
 	{
-
 		private Dictionary<T, List<T>> graph;
-		public Dictionary<T, List<T>> InitGraph()
+
+		public Dictionary<T, List<T>> InitGraph(bool undirected = false)
 		{
 			graph = new Dictionary<T, List<T>>();
+
+			Action<T,T> addNode = (src,dest) => {
+				if (!graph.ContainsKey(src))
+					graph.Add(src, new List<T>());
+
+				graph[src].Add(dest);
+			};
 
 			var n = int.Parse(Console.ReadLine());
 
 			for (int i = 0; i < n; i++)
 			{
 				var tmp = Console.ReadLine().Split(' ').Select(Parse).ToArray();
-				if (!graph.ContainsKey(tmp[0]))
-					graph.Add(tmp[0], new List<T>());
+				addNode(tmp[0], tmp[1]);
 
-				graph[tmp[0]].Add(tmp[1]);
+				if(undirected) 
+				{
+					addNode(tmp[1], tmp[0]);
+				}
 			}
 
 			return graph;
@@ -38,14 +58,14 @@ namespace Graph
 
 			foreach (var item in graph.Keys)
 			{
-				TS(visited, sorted, item);
+				TopologicalSort(visited, sorted, item);
 			}
 
 			sorted.Reverse();
 			return sorted;
 		}
 
-		private void TS(Dictionary<T, bool> visited, List<T> sorted, T node)
+		private void TopologicalSort(Dictionary<T, bool> visited, List<T> sorted, T node)
 		{
 			if (!visited.ContainsKey(node))
 			{
@@ -54,7 +74,7 @@ namespace Graph
 				{
 					foreach (var item in graph[node])
 					{
-						TS(visited, sorted, item);
+						TopologicalSort(visited, sorted, item);
 					}
 				}
 				sorted.Add(node);
